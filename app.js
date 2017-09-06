@@ -4,9 +4,9 @@ const bodyParser = require('body-parser');
 const sequelize = require('sequelize');
 const app = express();
 
-app.use(bodyParser.json({
-}));
+app.use(bodyParser.json({}));
 
+// list activities
 app.get("/api/activities", function(req, res) {
   models.activity.findAll()
     .then(function(activity) {
@@ -15,6 +15,20 @@ app.get("/api/activities", function(req, res) {
         "activity": activity
       });
     })
+});
+
+// add new activities
+app.post("/api/activities", function(req, res) {
+  const active = models.activity.build({
+    name: req.body.name,
+    amount: req.body.amount
+  })
+  active.save().then(function(newActivity) {
+    res.json({
+      "status": "success",
+      "data": newActivity
+    });
+  })
 });
 
 app.listen(3000, function() {
