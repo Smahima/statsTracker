@@ -31,6 +31,19 @@ app.post("/api/activities", function(req, res) {
   })
 });
 
+app.put("/api/activities/{id}", function (req,res) {
+  models.activity.update({
+    name: req.body.name,
+    amount: req.body.amount
+  }, {where: {id: req.params.id}})
+  .then(function(update){
+    res.json({
+      "status": "success",
+      "udpate": update
+    })
+  })
+});
+
 app.listen(3000, function() {
   console.log('Ciao');
 })
