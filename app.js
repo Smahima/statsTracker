@@ -2,9 +2,34 @@ const models = require("./models");
 const express = require('express');
 const bodyParser = require('body-parser');
 const sequelize = require('sequelize');
+const passport = require('passport');
+const BasicStrategy = require('passport-http').BasicStrategy;
 const app = express();
 
 app.use(bodyParser.json({}));
+
+const users = {
+    'Mahima': 'work'
+};
+
+passport.use(new BasicStrategy(
+  function(username, password, done) {
+      const userPassword = users[username];
+      if (!userPassword) { return done(null, false); }
+      if (userPassword !== password) { return done(null, false); }
+      return done(null, username);
+  }
+));
+
+// put routes here
+
+// basic authentication
+app.get('/api/hello',
+    passport.authenticate('basic', {session: false}),
+    function (req, res) {
+        res.json({"hello": req.user, status: "success"})
+    }
+);
 
 // list activities
 app.get("/api/activities", function(req, res) {
